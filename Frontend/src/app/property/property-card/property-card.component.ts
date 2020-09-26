@@ -1,18 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from "@angular/core";
+import { IProperty } from '../../model/iProperty';
 
 @Component({
-  selector: 'app-property-card',
-  templateUrl: 'property-card.component.html',
-  styleUrls: ['property-card.component.scss'],
+  selector: "app-property-card",
+  templateUrl: "property-card.component.html",
+  styleUrls: ["property-card.component.scss"],
 })
 export class PropertyCardComponent implements OnInit {
-  Property: any = {
-    Id: 1,
-    Name: "Whitehouse",
-    Type: 'House',
-    Price: 12000,
-  };
-
+  @Input() property: IProperty;
+  @Input() hideIcons: boolean;
   constructor() {}
 
   ngOnInit() {}
