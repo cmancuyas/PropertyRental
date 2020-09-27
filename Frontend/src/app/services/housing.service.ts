@@ -12,28 +12,49 @@ import { Property } from "../model/property";
 export class HousingService {
   constructor(private http: HttpClient) {}
 
-  getAllProperties(SellRent: number): Observable<IProperty[]> {
+  getProperty(id: number) {
+    return this.getAllProperties().pipe(
+      map((propertiesArray) => {
+        // throw new Error("Some error");
+        return propertiesArray.find((p) => p.Id === id);
+      })
+    );
+  }
+
+  getAllProperties(SellRent?: number): Observable<Property[]> {
     return this.http.get("data/properties.json").pipe(
       map((data) => {
-        const propertiesArray: Array<IProperty> = [];
+        const propertiesArray: Array<Property> = [];
         const localProperties = JSON.parse(localStorage.getItem("newProp"));
-        if(localStorage){
+
+        if (localStorage) {
           for (const id in localProperties) {
-            if (localProperties.hasOwnProperty(id) && localProperties[id].SellRent === SellRent) {
+            if (SellRent) {
+              if (
+                localProperties.hasOwnProperty(id) &&
+                localProperties[id].SellRent === SellRent
+              ) {
+                propertiesArray.push(localProperties[id]);
+              }
+            } else {
               propertiesArray.push(localProperties[id]);
             }
           }
         }
 
-
         for (const id in data) {
-          if (data.hasOwnProperty(id) && data[id].SellRent === SellRent) {
+          if (SellRent) {
+            if (data.hasOwnProperty(id) && data[id].SellRent === SellRent) {
+              propertiesArray.push(data[id]);
+            }
+          } else {
             propertiesArray.push(data[id]);
           }
         }
         return propertiesArray;
       })
     );
+    return this.http.get<Property[]>("data/properties.json");
   }
 
   addProperty(property: Property) {
